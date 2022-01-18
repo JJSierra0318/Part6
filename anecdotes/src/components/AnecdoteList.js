@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { handleLike } from '../reducers/anecdoteReducer'
+import { likeNotification, removeNotification } from '../reducers/notificationReducer'
 
 const compareVotes = (a, b) => {
   if (parseInt(a.votes) < parseInt(b.votes)) {
@@ -25,16 +26,20 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const Anecdotes = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state => state.anecdotes)
+  const filter = useSelector(state => state.filter)
 
   return (
     <div>
-      <h2>Anecdotes</h2>
-      {anecdotes.sort(compareVotes).map(anecdote =>
+      {anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase())).sort(compareVotes).map(anecdote =>
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => dispatch(handleLike(anecdote.id))}
+          handleClick={() => {
+            dispatch(handleLike(anecdote.id))
+            dispatch(likeNotification(anecdote.content))
+            setTimeout(() => {dispatch(removeNotification())}, 5000)
+          }}
         />)}
     </div>
   )
