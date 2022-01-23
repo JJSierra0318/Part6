@@ -1,7 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { handleLike } from '../reducers/anecdoteReducer'
-import { likeNotification, removeNotification } from '../reducers/notificationReducer'
 
 const compareVotes = (a, b) => {
   if (parseInt(a.votes) < parseInt(b.votes)) {
@@ -36,9 +35,7 @@ const Anecdotes = () => {
           key={anecdote.id}
           anecdote={anecdote}
           handleClick={() => {
-            dispatch(handleLike(anecdote.id))
-            dispatch(likeNotification(anecdote.content))
-            setTimeout(() => {dispatch(removeNotification())}, 5000)
+            dispatch(handleLike(anecdote))
           }}
         />)}
     </div>
