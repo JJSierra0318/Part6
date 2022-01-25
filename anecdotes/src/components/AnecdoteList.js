@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 import { handleLike } from '../reducers/anecdoteReducer'
 
 const compareVotes = (a, b) => {
@@ -23,10 +23,10 @@ const Anecdote = ({ anecdote, handleClick }) => {
   )
 }
 
-const Anecdotes = () => {
-  const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state.anecdotes)
-  const filter = useSelector(state => state.filter)
+const Anecdotes = (props) => {
+  
+  const anecdotes = props.anecdotes
+  const filter = props.filter
 
   return (
     <div>
@@ -34,12 +34,26 @@ const Anecdotes = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => {
-            dispatch(handleLike(anecdote))
-          }}
+          handleClick={() => props.handleLike(anecdote)}
         />)}
     </div>
   )
 }
 
-export default Anecdotes
+const mapStateToProps = (state) => {
+  return {
+    anecdotes: state.anecdotes,
+    filter: state.filter
+  }
+}
+
+const mapDispatchToProps = {
+  handleLike,
+}
+
+const connectedAnecdotes = connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Anecdotes)
+
+export default connectedAnecdotes
